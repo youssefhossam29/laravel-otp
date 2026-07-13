@@ -57,4 +57,23 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $this->notify(new VerifyEmailNotification);
     }
+
+    public function otpCodes(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(OtpCode::class);
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return (bool) $this->two_factor_enabled;
+    }
+
+    public function canUseChannel(string $channel): bool
+    {
+        return match($channel) {
+            'email' => !is_null($this->email_verified_at),
+            'sms'   => !is_null($this->phone_verified_at),
+            default => false,
+        };
+    }
 }
