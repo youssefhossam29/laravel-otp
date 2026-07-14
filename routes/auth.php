@@ -9,6 +9,7 @@ use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
+use App\Http\Controllers\Auth\TwoFactorController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -56,4 +57,18 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
         ->name('logout');
+
+    // 2FA Management (Profile)
+    Route::controller(TwoFactorController::class)->prefix('/2fa')->name('2fa.')->group(function () {
+        Route::post('/enable', 'enable')->name('enable');
+        Route::patch('/update', 'updateChannel')->name('update');
+        Route::post('/disable', 'disable')->name('disable');
+    });
+});
+
+// 2FA Challenge (Login Flow) 
+Route::controller(TwoFactorController::class)->prefix('/2fa')->name('2fa.')->middleware('guest')->group(function () {
+    Route::get('/show', 'show')->name('show');
+    Route::post('/verify', 'verify')->name('verify');
+    Route::post('/resend', 'resend')->middleware('throttle:1,1')->name('resend');
 });
