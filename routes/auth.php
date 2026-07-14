@@ -67,7 +67,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // 2FA Challenge (Login Flow) 
-Route::controller(TwoFactorController::class)->prefix('/2fa')->name('2fa.')->middleware('guest')->group(function () {
+Route::controller(TwoFactorController::class)->prefix('/2fa')->name('2fa.')->middleware(['guest', '2fa.session'])->group(function () {
     Route::get('/show', 'show')->name('show');
     Route::post('/verify', 'verify')->name('verify');
     Route::post('/resend', 'resend')->middleware('throttle:1,1')->name('resend');
