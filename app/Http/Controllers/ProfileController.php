@@ -30,6 +30,12 @@ class ProfileController extends Controller
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
+
+            // If the user uses Email as 2FA, disable it so they aren't locked out
+            if ($request->user()->two_factor_preferred_channel === 'email') {
+                $request->user()->two_factor_enabled = false;
+                $request->user()->two_factor_preferred_channel = null;
+            }
         }
 
         $request->user()->save();
