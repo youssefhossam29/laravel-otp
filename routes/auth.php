@@ -10,6 +10,7 @@ use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use App\Http\Controllers\Auth\TwoFactorController;
+use App\Http\Controllers\PhoneController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -64,6 +65,14 @@ Route::middleware('auth')->group(function () {
         Route::patch('/update', 'updateChannel')->name('update');
         Route::post('/disable', 'disable')->name('disable');
     });
+
+    // Phone Management
+    Route::controller(PhoneController::class)->prefix('/phone')->name('phone.')->group(function () {
+        Route::post('/update', 'update')->name('update');
+        Route::post('/send-otp', 'sendOtp')->name('send_otp')->middleware('throttle:1,1');
+        Route::post('/verify', 'verify')->name('verify');
+    });
+    
 });
 
 // 2FA Challenge (Login Flow) 

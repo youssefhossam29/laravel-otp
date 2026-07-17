@@ -76,4 +76,18 @@ class User extends Authenticatable implements MustVerifyEmail
             default => false,
         };
     }
+
+    public function updatePhone(string $phoneNumber): void
+    {
+        $this->phone_number = $phoneNumber;
+        $this->phone_verified_at = null;
+
+        if ($this->two_factor_preferred_channel === 'sms') {
+            $this->two_factor_enabled = false;
+            $this->two_factor_preferred_channel = null;
+        }
+
+        $this->save();
+    }
+    
 }
