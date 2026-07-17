@@ -66,7 +66,7 @@ class TwoFactorController extends Controller
     public function enable(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'preferred_channel' => 'required|string|in:email',
+            'preferred_channel' => 'required|string|in:email,sms',
         ]);
 
         $user = $request->user();
@@ -89,7 +89,7 @@ class TwoFactorController extends Controller
     public function updateChannel(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'preferred_channel' => 'required|string|in:email',
+            'preferred_channel' => 'required|string|in:email,sms',
         ]);
 
         $user = $request->user();

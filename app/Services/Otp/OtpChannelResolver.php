@@ -11,6 +11,7 @@ class OtpChannelResolver
 {
     public function __construct(
         private EmailOtpChannel $email,
+        private Channels\SmsOtpChannel $sms,
     ) {}
 
     public function resolve(User $user): OtpChannel
@@ -21,6 +22,7 @@ class OtpChannelResolver
 
         return match ($user->two_factor_preferred_channel) {
             'email' => $this->email,
+            'sms'   => $this->sms,
             default => throw new \InvalidArgumentException(
                 "Unsupported OTP channel: {$user->two_factor_preferred_channel}"
             ),
